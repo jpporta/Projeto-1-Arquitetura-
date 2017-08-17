@@ -36,7 +36,7 @@ main:
 	beq $t0,$v0,ExibirgastosPorCategoria
 	
 	addi $t0, $zero,6
-	beq $t0,$v0,ExibirRankingPorDespesas
+	beq $t0,$v0,ExibirRankingPorDespesas 
 	
 	addi $t0, $zero,7
 	beq $t0,$v0,ExibirRankingPorDespesas
