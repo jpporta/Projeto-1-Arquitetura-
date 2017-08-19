@@ -21,25 +21,25 @@ main:
 
 #---------------Verifica qual a opcao escolhida pelo usuario e desvia o programa para o label certo--	
 	addi $t0, $zero,1
-	beq $t0,$v0,RegistrarDespesas
+	beq $t0,$v0,RegistrarDespesas #caso t0 e v0 sejam iguais da um jump
 	
 	addi $t0, $zero,2
-	beq $t0,$v0,ExcluirDespesas
+	beq $t0,$v0,ExcluirDespesas #caso t0 e v0 sejam iguais da um jump
 	
 	addi $t0, $zero,3
-	beq $t0,$v0,ListarDespesas
+	beq $t0,$v0,ListarDespesas #caso t0 e v0 sejam iguais da um jump
 	
 	addi $t0, $zero,4
-	beq $t0,$v0,ExibirGastoMensal
+	beq $t0,$v0,ExibirGastoMensal #caso t0 e v0 sejam iguais da um jump
 	
 	addi $t0, $zero,5
-	beq $t0,$v0,ExibirgastosPorCategoria
+	beq $t0,$v0,ExibirgastosPorCategoria #caso t0 e v0 sejam iguais da um jump
 	
 	addi $t0, $zero,6
-	beq $t0,$v0,ExibirRankingPorDespesas 
+	beq $t0,$v0,ExibirRankingPorDespesas #caso t0 e v0 sejam iguais da um jump
 	
 	addi $t0, $zero,7
-	beq $t0,$v0,ExibirRankingPorDespesas
+	beq $t0,$v0,Sair #caso t0 e v0 sejam iguais da um jump
 #------------------------------------------------------------------------------------------------------	
 # dentro dos labels so tem uma funcao teste para saber se entro no label certo	
 RegistrarDespesas:
@@ -79,4 +79,5 @@ ExibirRankingPorDespesas:
 	syscall
 	j main # retorna para a main
 Sair:
-	
+	li $v0, 10 # comando de exit
+	syscall
