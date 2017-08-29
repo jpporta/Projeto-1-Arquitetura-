@@ -6,8 +6,8 @@ msg2: .asciiz "\nInsira o dia:"
 msg3: .asciiz "\nInsira o mes:"
 msg4: .asciiz "\nInsira o ano:"
 msg5: .asciiz "\nInsira o tipo de gasto:"
-msg4: .asciiz "\nInsira o valor gasto:"
-msg5: .asciiz "\n"
+msg6: .asciiz "\nInsira o valor gasto:"
+msg10: .asciiz "\n"
 .text
 .globl main
 
@@ -66,6 +66,14 @@ RegistrarDespesas:
 	
 	li $v0, 4     # Codigo SysCall p/ escrever strings
 	la $a0, msg5  #Passa a msg para o parametro a0
+	syscall
+	
+	li $v0, 4     # Codigo SysCall p/ escrever strings
+	la $a0, msg6  #Passa a msg para o parametro a0
+	syscall
+	
+	li $v0, 4     # Codigo SysCall p/ escrever strings
+	la $a0, msg10  #Passa a msg para o parametro a0
 	syscall
 	
 	j main # retorna para a main
