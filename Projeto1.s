@@ -2,8 +2,10 @@
 msg0: .asciiz "\tControle de Gastos\n"
 msg1: .ascii "\t\t1) Registrar Despesas\n\t\t2) Excluir Despesas\n\t\t3) Listar Despesas\n\t\t4) Exibir Gasto Mensal\n\t\t"
 msg11:.asciiz"5) Exibir gastos por Categoria\n\t\t6) Exibir Ranking por Despesas\n\t\t7) Sair\n\n"
-msg2: .asciiz "\nInsira a data da despesa:"
-msg3: .asciiz "\nInsira o tipo de gasto:"
+msg2: .asciiz "\nInsira o dia:"
+msg3: .asciiz "\nInsira o mes:"
+msg4: .asciiz "\nInsira o ano:"
+msg5: .asciiz "\nInsira o tipo de gasto:"
 msg4: .asciiz "\nInsira o valor gasto:"
 msg5: .asciiz "\n"
 .text
