@@ -2,8 +2,10 @@
 msg0: .asciiz "\tControle de Gastos\n"
 msg1: .ascii "\t\t1) Registrar Despesas\n\t\t2) Excluir Despesas\n\t\t3) Listar Despesas\n\t\t4) Exibir Gasto Mensal\n\t\t"
 msg11:.asciiz"5) Exibir gastos por Categoria\n\t\t6) Exibir Ranking por Despesas\n\t\t7) Sair\n\n"
-
-msg3:
+msg2: .asciiz "\nInsira a data da despesa:"
+msg3: .asciiz "\nInsira o tipo de gasto:"
+msg4: .asciiz "\nInsira o valor gasto:"
+msg5: .asciiz "\n"
 .text
 .globl main
 
@@ -47,6 +49,23 @@ RegistrarDespesas:
 	li $v0, 1
 	add $a0, $zero, 1		
 	syscall
+	
+	li $v0, 4     # Codigo SysCall p/ escrever strings
+	la $a0, msg2  #Passa a msg para o parametro a0
+	syscall
+	
+	li $v0, 4     # Codigo SysCall p/ escrever strings
+	la $a0, msg3  #Passa a msg para o parametro a0
+	syscall
+	
+	li $v0, 4     # Codigo SysCall p/ escrever strings
+	la $a0, msg4  #Passa a msg para o parametro a0
+	syscall
+	
+	li $v0, 4     # Codigo SysCall p/ escrever strings
+	la $a0, msg5  #Passa a msg para o parametro a0
+	syscall
+	
 	j main # retorna para a main
 ExcluirDespesas:
 	add $t0, $zero,$v0
@@ -79,5 +98,5 @@ ExibirRankingPorDespesas:
 	syscall
 	j main # retorna para a main
 Sair:
-	li $v0, 10 # comando de exit
-	syscall
+	#li $v0, 10 # comando de exit, nao sei se vamos usar mais por via das duvidas deixei comentado 
+	#syscall
