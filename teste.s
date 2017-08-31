@@ -27,23 +27,6 @@ main:
 
 	li $v0, 5	 # Codigo SysCall p/ ler inteiros
 	syscall
-#---------------STRCMP------------------------------------------------------------------------------
-STRCMP: #$a0 String 1, $a1 String 2, $v0 = 0 se igual, $v0 = 1 se diferente
-    add $t0, $zero, $zero # i = 0
-STRCMPL1:
-    add $t1, $a0, $t0 # $t1 = &str1[i]
-    lbu $t1, 0($t1) # $t1 = str1[i]
-    add $t2, $a1, $t0 # $t2 = &str2[i]
-    lbu $t2, 0($t2) # $t2 = str2[i]
-    beq $t1, $t2, STRCMP_L2 # se for igual entre si
-    addi $v0, $zero, 1
-    j STRCMP_FIM
-STRCMP_L2:
-    addi $t0, $t0, 1
-    bne $t1, $zero, STRCMPL1 # se nao for \0 volta com i++
-    add $v0, $zero, $zero
-STRCMP_FIM:
-    jr $ra
 
 #---------------Verifica qual a opcao escolhida pelo usuario e desvia o programa para o label certo--
 	addi $t0, $zero,1
@@ -207,3 +190,21 @@ ExibirRankingPorDespesas:
 Sair:
 	li $v0, 10 # comando de exit, nao sei se vamos usar mais por via das duvidas deixei comentado
 	syscall
+
+#---------------STRCMP------------------------------------------------------------------------------
+STRCMP: #$a0 String 1, $a1 String 2, $v0 = 0 se igual, $v0 = 1 se diferente
+    add $t0, $zero, $zero # i = 0
+STRCMPL1:
+    add $t1, $a0, $t0 # $t1 = &str1[i]
+    lbu $t1, 0($t1) # $t1 = str1[i]
+    add $t2, $a1, $t0 # $t2 = &str2[i]
+    lbu $t2, 0($t2) # $t2 = str2[i]
+    beq $t1, $t2, STRCMP_L2 # se for igual entre si
+    addi $v0, $zero, 1
+    j STRCMP_FIM
+STRCMP_L2:
+    addi $t0, $t0, 1
+    bne $t1, $zero, STRCMPL1 # se nao for \0 volta com i++
+    add $v0, $zero, $zero
+STRCMP_FIM:
+    jr $ra
