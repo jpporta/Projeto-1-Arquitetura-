@@ -4,6 +4,23 @@ id: .space 4 #$t3
 pos: .space 4 #t4
 pos2: .space 4#usada pra tanto print quanto excluir
 tam: .space 4 #tamanho do array
+meses: .space 48
+
+msgMesAno: .asciiz "\n\nAno a ser verificado?\n"
+msgMes0: .asciiz "\n\nJaneiro"
+msgMes1: .asciiz "\n\nFevereiro"
+msgMes2: .asciiz "\n\nMarco"
+msgMes3: .asciiz "\n\nAbril"
+msgMes4: .asciiz "\n\nMaio"
+msgMes5: .asciiz "\n\nJunho"
+msgMes6: .asciiz "\n\nJulho"
+msgMes7: .asciiz "\n\nAgosto"
+msgMes8: .asciiz "\n\nSetembro"
+msgMes9: .asciiz "\n\nOutubro"
+msgMes10: .asciiz "\n\nNovembro"
+msgMes11: .asciiz "\n\nDezembro"
+msgMesVal: .asciiz "\nValor: R$ "
+
 
 msg0: .asciiz "\tControle de Gastos\n"
 msg1: .ascii "\t\t1) Registrar Despesas\n\t\t2) Excluir Despesas\n\t\t3) Listar Despesas\n\t\t4) Exibir Gasto Mensal\n\t\t"
@@ -84,6 +101,9 @@ la $t2, array1
 
 addi $s0, $zero, 0 #pega o primeiro ID
 lh $s2, 0($t2)
+
+la $t4, pos #
+sw $zero, 0($t4)
 
 ContinuaBuscaRD:
 beq $s2, $zero, ContinuaRD #compara se eh zero
@@ -289,15 +309,13 @@ ProcuraID:
 
 ExcluidID:
 
-
-
 	la $t4,pos2
 	lw $s1,0($t4) #pega a posicao salva em pos2
 
 	la $t2, array1
 	add $t2, $t2, $s1 # vai pra posicao do array indicada por pos2
 	addi $s3, $zero, 0
-	sw $s3, 0($t2)# coloca -1 no ID
+	sh $s3, 0($t2)# coloca -1 no ID
 
 	addi $t2, $t2, 8
 	addi $s3, $zero, 365
@@ -441,12 +459,7 @@ syscall
 
 	j ContinuaBuscaLD #
 
-ExibirGastoMensal:
-	add $t0, $zero,$v0
-	li $v0, 1
-	addi $a0, $zero, 4
-	syscall
-	j main # retorna para a main
+
 ExibirgastosPorCategoria:
 	add $t0, $zero,$v0
 	li $v0, 1
@@ -582,6 +595,258 @@ endiloop:
 
 endBubble:
 	jr $ra
+
+	##########################################
+	#LISTAGEM DE DESPESAS POR Mes
+	##########################################
+ExibirGastoMensal:
+
+	la $s2, array1 #Load addres do vetor
+	addi $s2, $s2, -32
+
+	addi $v0, 4
+	la $a0, msgMesAno
+	syscall
+
+	addi $v0, 5
+	syscall
+	add $a0, $zero, $v0
+
+LoopDespesasMes:
+	addi $s2, $s2, 32
+	#condicao de parada
+	lh $t0, 0($s2)
+	beq $t0, $zero, EndLoopDespesaMes
+	#else
+	addi $s2, $s2, 6 # posicao do ano
+	lh $t0, 0($s2)
+	addi $s2, $s2, -6 #pos inicial
+	bne $t0, $a0, LoopDespesasMes
+
+	addi $s2, $s2, 4
+	lh $t0, 0($s2) #recebe o mes
+	addi $s2, $s2, -4
+
+	addi $t0, $t0, -1
+	#Loop para encontrar a posicao certa do vetor meses
+	la $s1, meses
+LoopRegistrarDespesaMes:
+	beq $t0, $zero, FimLoopRegistrarDespesas #condicao de parada
+	addi $s1, $s1, 4
+	addi $t0, $t0, -1
+	j LoopRegistrarDespesaMes
+FimLoopRegistrarDespesas:
+
+	# mes encontrado
+	addi $s2, $s2, 12
+	l.s $f0, 0($s2) #valor da despesa
+	addi $s2, $s2, -12
+
+	l.s $f1, 0($s1) #valor da soma do mes
+
+	add.s $f0, $f0, $f1 # f0 = despesa + soma das despesas anteriores
+
+	s.s $f0, 0($s1)
+
+	j LoopDespesasMes
+EndLoopDespesaMes:
+
+#Listagem das Despesas
+
+	la $s1, meses
+
+	#janeiro
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes0
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#fevereiro
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes1
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#marco
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes2
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#abril
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes3
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#maio
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes4
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#junho
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes5
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#julho
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes6
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#agosto
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes7
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#setembro
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes8
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#outubro
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes9
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#novembro
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes10
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#dezembro
+	addi $s1, $s1, 4
+	l.s $f12, 0($s1)
+
+	addi $v0, $zero, 4
+	la $a0, msgMes11
+	syscall
+
+	addi $v0, $zero, 4
+	la $a0, msgMesVal
+	syscall
+
+	addi $v0, $zero, 2
+	syscall
+
+	#limpar vetor meses
+	addi $t1, $zero, 12
+	la $s1, meses
+LoopZerarVetor:
+	beq $t1, $zero, FimLoopZeraVetor
+	s.s $zero, 0($s1)
+	addi $s1, $s1, 4
+	addi $t1, $t1, -1
+	j LoopZerarVetor
+FimLoopZeraVetor:
+
+j main
+
 
 	#---------------STRCMP------------------------------------------------------------------------------
 # STRCMP: #$a0 String 1, $a1 String 2, $v0 = 0 se igual, $v0 = 1 se diferente
