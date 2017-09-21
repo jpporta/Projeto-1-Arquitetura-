@@ -1,11 +1,18 @@
 vetorCat: .space 200 #sendo no maximo 10 categorias
 
 
+##########################################
+# ORGANIZAR DESPESA POR CATEGORIA
+##########################################
 # $s0 contem endereco do vetor principal
 # $s1-4 contem a string categoria
 # $f0 contem o valor da despesa atual
 # entrar na funçao com jal
 InserirDespesas:
+
+	# salvando endereco de retorno
+	sw  $ra, 0($sp)
+	addi $sp, $sp, 4
 
     # limpeza do vetor, se houversse algo dentro seria duplicado
     addi $t0, $t0, 201
@@ -19,7 +26,6 @@ limpezaVetorDespeza:
 FimLimpezaVetorDespeza:
 
     la $s0, arra1 #carrega o endereço array principal
-    addi $s7, $ra, $zero
 
 AdicionaDespesasVetorCar:
     # condição de parada
@@ -45,7 +51,9 @@ AdicionaDespesasVetorCar:
     jal insereDespesaVetor
     j AdicionaDespesasVetorCar
 FimAdicionaDespesaVetorCar:
-    jr $s7
+    addi $sp, $sp, -4
+    lw $ra, 0($sp)
+    jr $ra
 
 # Inserir valores no vetor de categorias
 insereDespesaVetor:
@@ -54,7 +62,7 @@ insereDespesaVetor:
     addi $s5, $s5, -20 # Para facilitar o Loop
     addi $s6, $zero, 11 # contador/limite de categorias
 
-    SegueListaCategoria:
+SegueListaCategoria:
     addi $s5, $s5, 20
     addi $s6, $s6, -1 #count--
 
@@ -81,7 +89,7 @@ insereDespesaVetor:
     bne $t0, $zero, SegueListaCategoria # não é igual, e não vazio, não insere
     j comparacaoCorretaCategoria
 
-# so entro aqui se o vetor de comparado esta vazio, portanto devo inserir uma nova categoria
+    # so entro aqui se o vetor de comparado esta vazio, portanto devo inserir uma nova categoria
 insereDespesaVetorSemComparacao:
     sw $t0, 0($s5)
     sw $t1, 4($s5) # DUVIDA

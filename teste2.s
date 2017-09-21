@@ -5,6 +5,7 @@ pos: .space 4 #t4
 pos2: .space 4#usada pra tanto print quanto excluir
 tam: .space 4 #tamanho do array
 meses: .space 48
+vetorCat: .space 200 #sendo no maximo 10 categorias
 
 msgMesAno: .asciiz "\n\nAno a ser verificado?\n"
 msgMes0: .asciiz "\n\nJaneiro"
@@ -597,271 +598,364 @@ endBubble:
 	jr $ra
 
 	##########################################
-	#LISTAGEM DE DESPESAS POR Mes
-	##########################################
+#LISTAGEM DE DESPESAS POR Mes
+##########################################
 ExibirGastoMensal:
 
-	la $s2, array1 #Load addres do vetor
-	addi $s2, $s2, -32
+la $s2, array1 #Load addres do vetor
+addi $s2, $s2, -32
 
-	addi $v0, 4
-	la $a0, msgMesAno
-	syscall
+li $v0, 4
+la $a0, msgMesAno
+syscall
 
-	addi $v0, 5
-	syscall
-	add $a0, $zero, $v0
+li $v0, 5	 # Codigo SysCall p/ ler inteiros
+syscall
+add $a0, $zero, $v0
 
 LoopDespesasMes:
-	addi $s2, $s2, 32
-	#condicao de parada
-	lh $t0, 0($s2)
-	beq $t0, $zero, EndLoopDespesaMes
-	#else
-	addi $s2, $s2, 6 # posicao do ano
-	lh $t0, 0($s2)
-	addi $s2, $s2, -6 #pos inicial
-	bne $t0, $a0, LoopDespesasMes
+addi $s2, $s2, 32
+#condicao de parada
+lh $t0, 0($s2)
+beq $t0, $zero, EndLoopDespesaMes
+#else
+addi $s2, $s2, 6 # posicao do ano
+lh $t0, 0($s2)
+addi $s2, $s2, -6 #pos inicial
+bne $t0, $a0, LoopDespesasMes
 
-	addi $s2, $s2, 4
-	lh $t0, 0($s2) #recebe o mes
-	addi $s2, $s2, -4
+addi $s2, $s2, 4
+lh $t0, 0($s2) #recebe o mes
+addi $s2, $s2, -4
 
-	addi $t0, $t0, -1
-	#Loop para encontrar a posicao certa do vetor meses
-	la $s1, meses
+addi $t0, $t0, -1
+#Loop para encontrar a posicao certa do vetor meses
+la $s1, meses
 LoopRegistrarDespesaMes:
-	beq $t0, $zero, FimLoopRegistrarDespesas #condicao de parada
-	addi $s1, $s1, 4
-	addi $t0, $t0, -1
-	j LoopRegistrarDespesaMes
+beq $t0, $zero, FimLoopRegistrarDespesas #condicao de parada
+addi $s1, $s1, 4
+addi $t0, $t0, -1
+j LoopRegistrarDespesaMes
 FimLoopRegistrarDespesas:
 
-	# mes encontrado
-	addi $s2, $s2, 12
-	l.s $f0, 0($s2) #valor da despesa
-	addi $s2, $s2, -12
+# mes encontrado
+addi $s2, $s2, 12
+l.s $f0, 0($s2) #valor da despesa
+addi $s2, $s2, -12
 
-	l.s $f1, 0($s1) #valor da soma do mes
+l.s $f1, 0($s1) #valor da soma do mes
 
-	add.s $f0, $f0, $f1 # f0 = despesa + soma das despesas anteriores
+add.s $f0, $f0, $f1 # f0 = despesa + soma das despesas anteriores
 
-	s.s $f0, 0($s1)
+s.s $f0, 0($s1)
 
-	j LoopDespesasMes
+j LoopDespesasMes
 EndLoopDespesaMes:
 
 #Listagem das Despesas
 
-	la $s1, meses
+la $s1, meses
 
-	#janeiro
-	l.s $f12, 0($s1)
+#janeiro
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes0
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes0
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#fevereiro
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#fevereiro
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes1
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes1
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#marco
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#marco
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes2
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes2
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#abril
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#abril
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes3
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes3
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#maio
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#maio
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes4
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes4
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#junho
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#junho
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes5
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes5
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#julho
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#julho
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes6
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes6
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#agosto
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#agosto
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes7
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes7
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#setembro
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#setembro
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes8
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes8
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#outubro
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#outubro
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes9
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes9
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#novembro
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#novembro
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes10
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes10
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#dezembro
-	addi $s1, $s1, 4
-	l.s $f12, 0($s1)
+#dezembro
+addi $s1, $s1, 4
+l.s $f12, 0($s1)
 
-	addi $v0, $zero, 4
-	la $a0, msgMes11
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMes11
+syscall
 
-	addi $v0, $zero, 4
-	la $a0, msgMesVal
-	syscall
+addi $v0, $zero, 4
+la $a0, msgMesVal
+syscall
 
-	addi $v0, $zero, 2
-	syscall
+addi $v0, $zero, 2
+syscall
 
-	#limpar vetor meses
-	addi $t1, $zero, 12
-	la $s1, meses
+addi $v0, $zero, 4
+la $a0, msg10
+syscall
+
+#limpar vetor meses
+addi $t1, $zero, 12
+la $s1, meses
+sub.s $f3, $f3, $f3
 LoopZerarVetor:
-	beq $t1, $zero, FimLoopZeraVetor
-	s.s $zero, 0($s1)
-	addi $s1, $s1, 4
-	addi $t1, $t1, -1
-	j LoopZerarVetor
+beq $t1, $zero, FimLoopZeraVetor
+s.s $f3, 0($s1)
+addi $s1, $s1, 4
+addi $t1, $t1, -1
+j LoopZerarVetor
 FimLoopZeraVetor:
 
 j main
 
+##########################################
+# ORGANIZAR DESPESA POR CATEGORIA
+##########################################
+# $s0 contem endereco do vetor principal
+# $s1-4 contem a string categoria
+# $f0 contem o valor da despesa atual
+# entrar na funçao com jal
+InserirDespesas:
 
-	#---------------STRCMP------------------------------------------------------------------------------
-# STRCMP: #$a0 String 1, $a1 String 2, $v0 = 0 se igual, $v0 = 1 se diferente
-#     add $t0, $zero, $zero # i = 0
-# STRCMPL1:
-#     add $t1, $a0, $t0 # $t1 = &str1[i]
-#     lbu $t1, 0($t1) # $t1 = str1[i]
-#     add $t2, $a1, $t0 # $t2 = &str2[i]
-#     lbu $t2, 0($t2) # $t2 = str2[i]
-#     beq $t1, $t2, STRCMP_L2 # se for igual entre si
-#     addi $v0, $zero, 1
-#     j STRCMP_FIM
-# STRCMP_L2:
-#     addi $t0, $t0, 1
-#     bne $t1, $zero, STRCMPL1 # se nao for \0 volta com i++
-#     add $v0, $zero, $zero
-# STRCMP_FIM:
-#     jr $ra
+	# salvando endereco de retorno
+	sw  $ra, 0($sp)
+	addi $sp, $sp, 4
+
+    # limpeza do vetor, se houversse algo dentro seria duplicado
+    addi $t0, $t0, 201
+    la $t1, vetorCat
+limpezaVetorDespeza:
+    addi $t0, $t0, -1
+    beq $t0, $zero, FimLimpezaVetorDespeza
+    sb $zero, 0($t1)
+    addi $t1, $t1, 1
+    j limpezaVetorDespeza
+FimLimpezaVetorDespeza:
+
+    la $s0, arra1 #carrega o endereço array principal
+
+AdicionaDespesasVetorCar:
+    # condição de parada
+    lh $t0, 0($s0)
+    beq $t0, $zero, FimAdicionaDespesaVetorCar
+
+    #recebe valor despesa
+    addi $s0, $s0, 12
+    l.s $f0, 0($s0)
+    #recebe a categoria
+    addi $s0, $s0, 4
+    lw $s1, 0($s0)
+    addi $s0, $s0, 4
+    lw $s2, 0($s0)
+    addi $s0, $s0, 4
+    lw $s3, 0($s0)
+    addi $s0, $s0, 4
+    lw $s4, 0($s0)
+
+    # coloca a proxima despesa em s0
+    addi $s0, $s0, 4
+
+    jal insereDespesaVetor
+    j AdicionaDespesasVetorCar
+FimAdicionaDespesaVetorCar:
+	addi $sp, $sp, -4
+	lw $ra, 0($sp)
+    jr $ra
+
+# Inserir valores no vetor de categorias
+insereDespesaVetor:
+    #vetor categoria
+    la $s5, vetorCat
+    addi $s5, $s5, -20 # Para facilitar o Loop
+    addi $s6, $zero, 11 # contador/limite de categorias
+
+    SegueListaCategoria:
+    addi $s5, $s5, 20
+    addi $s6, $s6, -1 #count--
+
+    #condicao de parada
+    beq $s6, $zero, FimInsereDespesaVetor
+    #carregando a string do vetor
+    lw $t0, 0($s5)
+    lw $t1, 4($s5) # DUVIDA
+    lw $t2, 8($s5)
+    lw $t3, 16($s5)
+
+    beq $t0, $zero, insereDespesaVetorSemComparacao # se vazio insiro uma nova
+    #coparacao para ver se é igual
+    and $t0, $t0, $s0 # se igual, t = -1
+    and $t1, $t1, $s1 # se igual, t = -1
+    and $t2, $t2, $s2 # se igual, t = -1
+    and $t3, $t3, $s3 # se igual, t = -1
+
+    sub $t0, $t0, $t1 # se igual, t = 0
+    sub $t2, $t2, $t3 # se igual, t = 0
+
+    add $t0, $t0, $t2 # se as duas strings iguais, $t0 = 0
+
+    bne $t0, $zero, SegueListaCategoria # não é igual, e não vazio, não insere
+    j comparacaoCorretaCategoria
+
+# so entro aqui se o vetor de comparado esta vazio, portanto devo inserir uma nova categoria
+insereDespesaVetorSemComparacao:
+    sw $t0, 0($s5)
+    sw $t1, 4($s5) # DUVIDA
+    sw $t2, 8($s5)
+    sw $t3, 16($s5)
+
+# coparacao correta ou nova categoria
+comparacaoCorretaCategoria:
+    addi $s5, $s5, 16 # encontro o gasto
+
+    # somo o gasto já registrado, e retorno para o vetor
+    l.s $f1, 0($s5)
+    add.s $f0, $f0, $f1
+    s.s $f0, 0($s5)
+
+FimInsereDespesaVetor:
+    jr $ra
